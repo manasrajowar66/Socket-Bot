@@ -1,0 +1,80 @@
+{
+    "id": "bot",
+    "predictableActionArguments": true,
+    "initial": "hello",
+    "context": {
+        "data" : {}
+    },
+    "states": {
+        "hello": {
+            "on": {
+                "yes": {
+                    "target": "name",
+                    "actions": "storeText",
+                    "cond": "isText"
+                },
+                "no": {
+                    "target": "contacthr",
+                    "actions": "storeText",
+                    "cond": "isText"
+                }
+            }
+        },
+        "name": {
+            "on": {
+                "TRIGGER": {
+                    "target": "experience",
+                    "actions": "storeText",
+                    "cond": "isText"
+                }
+            }
+        },
+        "experience": {
+            "on": {
+                "TRIGGER": {
+                    "target": "skills",
+                    "actions": "storeText",
+                    "cond": "isNum"
+                }
+            }
+        },
+        "skills": {
+            "on": {
+                "TRIGGER": {
+                    "target": "contacthr",
+                    "actions": "storeText"
+                }
+            }
+        },
+        "contacthr": {
+            "onEntry": "storeContextToDb",
+            "type": "final"
+        }
+    },
+    "events": {
+        "hello": [
+            "yes",
+            "no"
+        ],
+        "name": [
+            "TRIGGER"
+        ],
+        "experience": [
+            "TRIGGER"
+        ],
+        "skills": [
+            "TRIGGER"
+        ],
+        "contacthr": [
+            ""
+        ]
+    },
+    "messages": {
+        "hello": "hello are you looking for job change ?  ",
+        "name": "what is your name?  ",
+        "experience": "how much experience do you have in years?   ",
+        "skills": "please enter your skills(comma seperated)   ",
+        "contacthr": "thanks for contacting us   ",
+        "review": "please review TFT's work culture?   "
+    }
+}

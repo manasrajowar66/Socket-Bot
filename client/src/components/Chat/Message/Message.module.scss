@@ -1,0 +1,24 @@
+.message {
+    background-color: #CFFDE1;
+    border-radius: 15px;
+    min-width: 15rem;
+    max-width: 20rem;
+    word-wrap: break-word;
+    display: inline-block;
+    clear: both;
+    padding: 1rem;
+    margin: 0.5rem 0;
+
+    p {
+        padding: 0;
+        margin: 0;
+    }
+}
+
+.incomming {
+    float: left;
+}
+
+.outgoing {
+    float: right;
+}
