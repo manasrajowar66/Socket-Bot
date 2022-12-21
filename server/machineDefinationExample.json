@@ -69,6 +69,7 @@
             ""
         ]
     },
+    
     "messages": {
         "hello": "hello are you looking for job change ?  ",
         "name": "what is your name?  ",
@@ -78,3 +79,4 @@
         "review": "please review TFT's work culture?   "
     }
 }
+

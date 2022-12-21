@@ -1,6 +1,7 @@
 const router = require("express").Router();
 require("dotenv").config();
 const { OAuth2Client } = require("google-auth-library");
+const { service } = require("../../startup/socketComm");
 
 router.post("/login", async (req, res) => {
   try {
@@ -17,14 +18,20 @@ router.post("/login", async (req, res) => {
       picture: payload.picture,
     });
   } catch (error) {
-    return res.status(400).json({ message: 'Invalid Token' });
+    return res.status(400).json({ message: "Invalid Token" });
   }
 });
 
-router.get("/machine-defination",async(req,res)=>{
-  const machineDefinationJson = req.body;
-  const machineDefination = JSON.parse(machineDefinationJson);
-  
-})
+router.post("/machine-defination", async (req, res) => {
+  try {
+    const machineDefinationJson = req.body.defination;
+    const machineDefination = JSON.parse(machineDefinationJson);
+    service.send({ type: "initialize", data: machineDefination });
+    res.send("Bot Initialized");
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ message: "Bot not Initialized" });
+  }
+});
 
 module.exports = router;

@@ -1,13 +1,31 @@
 import React from "react";
 import styles from "./Message.module.scss";
 
-const Message = ({ message }) => {
+const Message = ({ message, onSelect }) => {
   const messageStyle =
     message.type === "incomming" ? styles.incomming : styles.outgoing;
   const user = message.type === "incomming" ? "Bot" : "You";
+
+  const onSelectOption = (option) => {
+    onSelect(option);
+  };
+
   return (
     <div className={`${styles.message} ${messageStyle}`}>
-      <p>{`${user}: ${message.msg}`}</p>
+      <p>{`${user}: ${message.data.msg}`}</p>
+      <div className={styles.options}>
+        {message.data?.options?.map((option) => {
+          return (
+            <button
+              onClick={() => onSelectOption(option)}
+              key={option}
+              className={styles.option}
+            >
+              {option}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 };

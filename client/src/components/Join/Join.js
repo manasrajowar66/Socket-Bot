@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useCallback } from "react";
 import { UserContext } from "../../state/context";
 import { useActor } from "@xstate/react";
 import styles from "./Join.module.scss";
@@ -12,32 +12,36 @@ const Join = () => {
   const [state] = useActor(services.userService);
   console.log(state);
 
+  const history = useHistory();
+
+  const joinChat = useCallback(() => {
+    history.push(`/machine-defination`);
+  }, [history]);
+
+  const onLogin = useCallback(
+    async (token) => {
+      try {
+        const res = await axios.post("http://localhost:3001/api/user/login", {
+          token,
+        });
+        send({ type: "LOGIN", data: { user: res.data } });
+        localStorage.setItem("token", token);
+        joinChat();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [send, joinChat]
+  );
+
   useEffect(() => {
     //Checking jwt token is valid or not | Stored in local storage
     const token = localStorage.getItem("token");
     if (token) {
       onLogin(token);
     }
-  }, []);
+  }, [onLogin]);
 
-  const history = useHistory();
-
-  const joinChat = () => {
-    history.push(`/chat`);
-  };
-
-  const onLogin = async (token) => {
-    try {
-      const res = await axios.post("http://localhost:3001/api/user/login", {
-        token,
-      });
-      send({ type: "LOGIN", data: { user: res.data } });
-      localStorage.setItem("token", token);
-      joinChat(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   return (
     <div className={styles.container}>
       <div className={styles.sub_container}>

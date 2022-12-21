@@ -11,6 +11,7 @@ import { UserContext } from "./state/context";
 import { userMachine } from "./state/machine";
 import { useInterpret } from "@xstate/react";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import MachineDefination from "./components/MachineDefination/MachineDefination";
 
 const App = () => {
   const userService = useInterpret(userMachine);
@@ -20,7 +21,10 @@ const App = () => {
         <Switch>
           <Route exact path="/" component={Join}></Route>
           <ProtectedRoute>
-            <Route path="/chat" component={Chat} />
+            <Switch>
+              <Route path="/machine-defination" component={MachineDefination} />
+              <Route path="/chat" component={Chat} />
+            </Switch>
           </ProtectedRoute>
           <Route>
             <Redirect to="/" />

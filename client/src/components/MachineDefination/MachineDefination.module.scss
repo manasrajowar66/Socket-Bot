@@ -1,0 +1,42 @@
+.mainContainer {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: #E6DDC4;
+        padding: 1rem;
+        border-radius: 15px;
+
+        h1 {
+            color: #181D31;
+            margin-bottom: 1rem;
+        }
+
+        textarea {
+            margin: 0;
+            width: 15rem;
+            height: 10rem;
+            max-width: 20rem;
+            max-height: 20rem;
+        }
+
+        button {
+            margin-top: 1rem;
+            padding: 0.8rem 1.4rem;
+            background-color: #DC3535;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1rem;
+            letter-spacing: 0.1rem;
+        }
+    }
+}
