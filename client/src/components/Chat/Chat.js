@@ -4,6 +4,7 @@ import { useActor } from "@xstate/react";
 import { io } from "socket.io-client";
 import styles from "./Chat.module.scss";
 import Message from "./Message/Message";
+import ScrollToBottom from "react-scroll-to-bottom";
 
 let socket;
 const Chat = () => {
@@ -33,8 +34,8 @@ const Chat = () => {
   }, [name]);
 
   useEffect(() => {
-    socket.on("message", ({ type, text }) => {
-      send({ type: "ADD_MESSAGE", data: { type: type, msg: text } });
+    socket.on("message", ({ type, data }) => {
+      send({ type: "ADD_MESSAGE", data: { type: type, data: data } });
     });
 
     return () => {};
@@ -43,6 +44,10 @@ const Chat = () => {
   const onLogout = () => {
     send({ type: "LOGOUT" });
     localStorage.removeItem("token");
+  };
+
+  const onSelect = (option) => {
+    socket.emit("message", { type: option, message: option });
   };
 
   return (
@@ -54,11 +59,17 @@ const Chat = () => {
             Logout <img src={picture} alt="profile.img" />
           </button>
         </div>
-        <div className={styles.chatContainer}>
+        <ScrollToBottom
+          initialScrollBehavior="smooth"
+          mode="bottom"
+          className={styles.chatContainer}
+        >
           {messages.map((message, index) => {
-            return <Message message={message} key={index} />;
+            return (
+              <Message message={message} key={index} onSelect={onSelect} />
+            );
           })}
-        </div>
+        </ScrollToBottom>
         <div className={styles.inputField}>
           <input placeholder="Message" id="text-field" />
           <button onClick={sendMessage}>SEND</button>

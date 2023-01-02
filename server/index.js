@@ -8,6 +8,7 @@ const server = http.createServer(app);
     await require('./startup/routeHandling')(app);
     await require('./startup/socketComm')(server);
     await require('./startup/httpServer')(server);
+    await require("./startup/telegramComm")();
 })();
 
 
