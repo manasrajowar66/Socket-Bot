@@ -18,6 +18,7 @@
     "jwt-decode": "^3.1.2",
     "nodemon": "^2.0.20",
     "socket.io": "^4.5.4",
+    "telegraf": "3.32",
     "xstate": "^4.35.0"
   }
 }

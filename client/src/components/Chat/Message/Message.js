@@ -3,8 +3,8 @@ import styles from "./Message.module.scss";
 
 const Message = ({ message, onSelect }) => {
   const messageStyle =
-    message.type === "incomming" ? styles.incomming : styles.outgoing;
-  const user = message.type === "incomming" ? "Bot" : "You";
+    message.type === "incoming" ? styles.incoming : styles.outgoing;
+  const user = message.type === "incoming" ? "Bot" : "You";
 
   const onSelectOption = (option) => {
     onSelect(option);

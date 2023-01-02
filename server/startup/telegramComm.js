@@ -1,7 +1,7 @@
-const {Server} = require('socket.io');
-require('dotenv').config();
+require("dotenv").config();
 const { createMachine, assign, interpret } = require("xstate");
 const { machine } = require("../machine");
+const telegraf = require("telegraf");
 const {
   isText,
   isNum,
@@ -12,6 +12,7 @@ const {
 let currMachineDefinition;
 let service2;
 let currState;
+let options;
 
 //creating service for machine state
 const service = interpret(machine)
@@ -44,6 +45,9 @@ const service = interpret(machine)
       service2 = interpret(machine2).onTransition((state) => {
         //store current state in currState
         currState = state;
+        options = currMachineDefinition.events[currState.value].filter(
+          (event) => event && event !== "TRIGGER"
+        );
       });
       service2.start();
     } catch (error) {
@@ -52,55 +56,47 @@ const service = interpret(machine)
   })
   .start();
 
+const createMessage = async () => {
+  let msg = currMachineDefinition.messages[currState.value];
+  options.forEach((option) => {
+    msg += `\n/${option}\n`;
+  });
+  return msg;
+};
+
 const myModule = (module.exports = async (server) => {
-  const io = new Server(server, {
-    cors: "http://localhost:3000",
+  //Telegraf Bot create
+  const bot = new telegraf(process.env.TELEGRAM_TOKEN);
+
+  bot.start(async (ctx) => {
+    ctx.reply(await createMessage());
   });
 
-  io.on("connection", (socket) => {
-    console.log(`User Connected: ${socket.id}`);
+  bot.help((ctx) => {
+    ctx.reply("You enter the help command!");
+  });
 
-    socket.on("joined", () => {
-      socket.emit("message", {
-        user: "admin",
-        data: {
-          msg: currMachineDefinition.messages[currState.value],
-          options: currMachineDefinition.events[currState.value].filter(
-            (event) => event && event !== "TRIGGER"
-          ),
-        },
-        type: "incoming",
-      });
-    });
+  bot.settings((ctx) => {
+    ctx.reply("You enter the settings command!");
+  });
 
-    socket.on("message", async ({ type, message }) => {
-      if (!currState.done) {
-        socket.emit("message", {
-          user: "admin",
-          data: {
-            msg: message,
-          },
-          type: "outgoing",
+  bot.on("text", async (ctx) => {
+    if (!currState.done) {
+      const message = ctx.message.text;
+      if (options.length > 0) {
+        options.forEach(async (option) => {
+          if (message.toLowerCase().includes(option.toLowerCase())) {
+            await service2.send({ type: option, data: message });
+          }
         });
-
-        await service2.send({ type: type ? type : "TRIGGER", data: message });
-
-        socket.emit("message", {
-          user: "admin",
-          data: {
-            msg: currMachineDefinition.messages[currState.value],
-            options: currMachineDefinition.events[currState.value].filter(
-              (event) => event && event !== "TRIGGER"
-            ),
-          },
-          type: "incoming",
-        });
+      } else {
+        await service2.send({ type: "TRIGGER", data: message });
       }
-    });
-    socket.on("disconnect", () => {
-      console.log(`User Left`);
-    });
+      ctx.reply(await createMessage());
+    }
   });
+
+  bot.launch();
 });
 
 myModule.service = service;

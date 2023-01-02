@@ -1,4 +1,5 @@
 {
+    "type":"telegram-bot",
     "id": "bot",
     "predictableActionArguments": true,
     "initial": "hello",

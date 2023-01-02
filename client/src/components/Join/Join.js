@@ -15,7 +15,7 @@ const Join = () => {
   const history = useHistory();
 
   const joinChat = useCallback(() => {
-    history.push(`/machine-defination`);
+    history.push(`/machine-definition`);
   }, [history]);
 
   const onLogin = useCallback(
